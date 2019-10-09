@@ -1,0 +1,41 @@
+# This is Git's per-user configuration file.
+[color]
+ui = true
+diff = auto
+interactive = auto
+branch = auto
+status = auto
+
+[user]
+name = Dan McCracken
+email = daniel.mccracken@spectrumhealth.org
+
+[core]
+editor = vi
+	excludesfile = /Users/mccrda/.gitignore_global
+
+[credential]
+helper = osxkeychain
+
+[alias]
+co = checkout
+br = branch -v
+llog = log --date=local
+lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(red)<%an>%Creset' --abbrev-commit --date=local
+st = status -s
+s = status -s
+rhh = reset --hard
+ls = log -10 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(red)<%an>%Creset' --abbrev-commit --date=local
+l = log -10 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(red)<%an>%Creset' --abbrev-commit --date=local
+l = log -10 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(red)<%an>%Creset' --abbrev-commit --date=local
+s = status -s
+nam = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(red)<%an>%Creset' --abbrev-commit --date=local
+
+[push]
+        default = simple
+
+[init]
+        templatedir = ~/.git_template
+
+[github]
+        user = mccrackend
