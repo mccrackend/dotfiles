@@ -1,6 +1,4 @@
 cask_args appdir: "/Applications"
-tap "caskroom/cask"
-tap "caskroom/versions"
 
 cask "java8"
 cask "java"
