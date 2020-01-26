@@ -22,14 +22,12 @@ set -g fish_prompt_pwd_dir_length 20
 #fish_vi_key_bindings
 
 # Aliases
-alias ong="oc login https://openshift.ong.spectrum-health.org -u=mccrda"
-alias onb="oc login https://openshift.onb.spectrum-health.org -u=mccrda"
-alias ms="oc login (minishift ip):8443 -u=admin -p=admin"
+#alias ms="oc login (minishift ip):8443 -u=admin -p=admin"
 
 # Maven aliases
 alias mvnci="mvn clean install"
 alias mvncist="mvn clean install -DskipTests"
-alias wg="cd /opt/spectrum_health"
+alias wg="cd ~/workspace"
 
 # CKA aliases
 alias kc='kubectl'
@@ -41,4 +39,4 @@ alias kcon='kubectl config use-context'
 alias kgc='kubectl config get-context'
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/mccrda/google-cloud-sdk/path.fish.inc' ]; . '/Users/mccrda/google-cloud-sdk/path.fish.inc'; end
+#if [ -f '/Users/mccrda/google-cloud-sdk/path.fish.inc' ]; . '/Users/mccrda/google-cloud-sdk/path.fish.inc'; end
