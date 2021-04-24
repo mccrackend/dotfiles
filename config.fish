@@ -1,42 +1,91 @@
-# Environment
-set WORK /opt/spectrum_health
-set HOME_BIN $WORK/bin
-set DOTFILES_HOME $HOME/.dotfiles
-set JAVA_HOME (/usr/libexec/java_home -v '1.8*')
-set MAVEN_OPTS '-Xmx512m -Djava.awt.headless=true'
-set GROOVY_HOME /usr/local/opt/groovy/libexec
+# # # # # # # # # # # # # # # # # # # # # # # # #
+# Environment variables
+# # # # # # # # # # # # # # # # # # # # # # # # #
+set PATH $PATH ~/git/homebin ~/git/go/bin
+export PROJECTS_ROOT='/Users/dmccracken/git'
+set EDITOR nvim
+# set JAVA_HOME (/usr/libexec/java_home -v 1.8.0_202)
+set GOPATH /Users/dmccracken/git/go
 
-set PATH $PATH $HOME_BIN $DOTFILES_HOME/bin $JAVA_HOME/bin 
-
+# # # # # # # # # # # # # # # # # # # # # # # # #
 # BobTheFish Configs
+# # # # # # # # # # # # # # # # # # # # # # # # #
 set -g theme_nerd_fonts yes
-#set -g theme_display_k8s_context yes
-#set -g theme_display_docker_machine yes
 set -g theme_color_scheme solarized-dark
-set -g theme_display_vi no 
+set -g theme_display_vi yes
+set -g theme_display_k8s_context yes
+set -g theme_display_docker_machine yes
 set -g theme_newline_cursor yes
 set -g theme_display_git yes
 set -g fish_prompt_pwd_dir_length 20
 
+# # # # # # # # # # # # # # # # # # # # # # # # #
 # Standard settings
-#fish_vi_key_bindings
+# # # # # # # # # # # # # # # # # # # # # # # # #
+fish_vi_key_bindings
 
+# # # # # # # # # # # # # # # # # # # # # # # # #
 # Aliases
-#alias ms="oc login (minishift ip):8443 -u=admin -p=admin"
+# # # # # # # # # # # # # # # # # # # # # # # # #
+alias refresh="source ~/dotfiles/fish/config.fish"
+alias fishconfig="nvim ~/dotfiles/fish/config.fish"
+alias vimconfig="nvim ~/dotfiles/nvim/init.vim"
+# alias diff="git difftool"
+alias vim="nvim"
+alias yv="nvim - -c'set ft=yaml'"
+alias yb="bat -lyaml"
+
+alias fzfcmd="fzf --ansi -i -1 --height=50% --reverse -0 --inline-info --border"
 
 # Maven aliases
 alias mvnci="mvn clean install"
 alias mvncist="mvn clean install -DskipTests"
-alias wg="cd ~/workspace"
 
-# CKA aliases
+# Directory aliases
+alias dotfiles="cd ~/dotfiles"
+alias wg="cd ~/git"
+alias jenk="ssh -t dmccracken@rhokvtstdmsk01 'sudo su -'"
+alias os="~/git/openstack-ci/bin/startOpenStackTools.sh"
+alias lcp="sh ~/git/openstack-ci/bin/localKubeConfig.sh"
+alias fix="open smb://ddmi.intra.renhsc.com/DeptData"
+
+# CKA Aliases
 alias kc='kubectl'
-alias kgp='kubectl get pods'
-alias kgs='kubectl get svc'
-alias kgc='kubectl get componentstatuses'
-alias kctx='kubectl config current-context'
-alias kcon='kubectl config use-context'
-alias kgc='kubectl config get-context'
 
-# The next line updates PATH for the Google Cloud SDK.
-#if [ -f '/Users/mccrda/google-cloud-sdk/path.fish.inc' ]; . '/Users/mccrda/google-cloud-sdk/path.fish.inc'; end
+function fco -d "Fuzzy-find and checkout a branch"
+  git branch --all | grep -v HEAD | string trim | fzfcmd | read -l result; and git checkout "$result"
+end
+
+function fcoc -d "Fuzzy-find and checkout a commit"
+  git log --pretty=oneline --abbrev-commit --reverse | fzfcmd --tac +s -e | awk '{print $1;}' | read -l result; and git checkout "$result"
+end
+
+function bcd -d 'cd backwards'
+	pwd | awk -v RS=/ '/\n/ {exit} {p=p $0 "/"; print p}' | tail -r | fzfcmd +m --select-1 --exit-0 $FZF_BCD_OPTS | read -l result
+	[ "$result" ]; and cd $result
+	commandline -f repaint
+end
+
+function h -d 'cd to one of the previously visited locations'
+	# Clear non-existent folders from cdhist.
+	set -l buf
+	for i in (seq 1 (count $dirprev))
+		set -l dir $dirprev[$i]
+		if test -d $dir
+			set buf $buf $dir
+		end
+	end
+	set dirprev $buf
+	string join \n $dirprev | tail -r | sed 1d | fzfcmd +m --tiebreak=index --toggle-sort=ctrl-r $FZF_CDHIST_OPTS | read -l result
+	[ "$result" ]; and cd $result
+	commandline -f repaint
+end
+
+function fssh -d "Fuzzy-find ssh host via ag and ssh into it"
+  ag --ignore-case '^host [^*]' ~/.ssh/config | cut -d ' ' -f 2 | fzfcmd | read -l result; and ssh "$result"
+end
+
+function fh -d "Fuzzy-find ssh host via ag and ssh into it"
+  history | fzfcmd | read -l result
+  commandline -r $result
+end
